@@ -65,19 +65,9 @@ stopifnot(
 ## But the two data frames are not identical:
 identical(gorGor6_gap_data, gorGor6_gap_data2)  # FALSE!
 
-## However, their contents are the same. The reason they're not
-## identical is because of two minor differences:
-##   (1) "numeric" columns in 'gorGor6_gap_data' are "integer"
-##       columns in 'gorGor6_gap_data2';
-##   (2) rows are not in the same order in the two data frames.
-
-## Let's fix the column types in 'gorGor6_gap_data' by coercing
-## the "numeric" columns to "integer":
-for (j in which(sapply(gorGor6_gap_data, is.numeric))) {
-  gorGor6_gap_data[[j]] <- as.integer(gorGor6_gap_data[[j]])
-}
-
-## Let's order rows in the two data frames by genomic location,
+## However, they have the same content. Ony reason they're not
+## identical is because their rows are not in the same order.
+## Let's reorder the rows in the two data frames by genomic location,
 ## that is, first by chromosome, then by chromStart, and finally
 ## by chromEnd:
 sort_rows <- function(gap_data) {
@@ -90,7 +80,7 @@ sort_rows <- function(gap_data) {
 gorGor6_gap_data <- sort_rows(gorGor6_gap_data)
 gorGor6_gap_data2 <- sort_rows(gorGor6_gap_data2)
 
-## The two data frames are now identical!
+## Now the two data frames are identical:
 stopifnot(identical(gorGor6_gap_data, gorGor6_gap_data2))
 }
 

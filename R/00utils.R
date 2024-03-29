@@ -9,3 +9,10 @@ load_package_gracefully <- function(package, ...)
              "\n\n    BiocManager::install(\"", package, "\")")
 }
 
+lossless_num_to_int <- function(x)
+{
+    stopifnot(is.numeric(x))
+    y <- suppressWarnings(as.integer(x))
+    if (identical(as.numeric(y), x)) y else x
+}
+
