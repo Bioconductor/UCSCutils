@@ -1,7 +1,7 @@
 import(methods)
 importFrom(stats, setNames)
 importFrom(httr, GET, content, user_agent, stop_for_status)
-importFrom(rjson, fromJSON)
+importFrom(jsonlite, fromJSON)
 
 importFrom(S4Vectors, wmsg, isTRUEorFALSE, isSingleNumber,
                       isSingleString, isSingleStringOrNA,

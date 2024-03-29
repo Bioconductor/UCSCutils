@@ -7,51 +7,11 @@
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### .extract_table_data_from_parsed_json()
 ###
-### Lots of massaging and sanity checks to deal with the messiness of UCSC's
-### JSON!
+### WARNING: For JSON parsed with rjson::fromJSON()!
 ###
-
-### Quite chockingly, the list-based representation of a table as returned
-### by the /getData/track endpoint is row-oriented (i.e. one list element
-### per row) instead of column-oriented! Not a very efficient way to
-### represent a table in JSON :-/
-.make_data_frame_from_list_of_rows <- function(list_of_rows)
-{
-    stopifnot(is.list(list_of_rows), is.null(names(list_of_rows)))
-    if (length(list_of_rows) == 0L) {
-        ## Happens for example with
-        ## fetch_UCSC_track_data("eboVir3", "unipAliSwissprot").
-        warning(wmsg("track is empty ==> returning a 0x0 data frame"))
-        return(data.frame())
-    }
-
-    ## Turn list of rows into list of columns (transposition).
-
-    #ans_colnames <- names(list_of_rows[[1L]])
-    #list_of_cols <- lapply(setNames(ans_colnames, ans_colnames),
-    #    function(colname) {
-    #        col <- sapply(list_of_rows, function(row) row[[colname]],
-    #                      USE.NAMES=FALSE)
-    #        if (is.numeric(col))
-    #            col <- lossless_num_to_int(col)
-    #        col
-    #    }
-    #)
-
-    ### About 3x faster than the above!
-    m <- do.call(rbind, list_of_rows)  # a matrix of type list
-    ans_colnames <- colnames(m)
-    list_of_cols <- lapply(setNames(ans_colnames, ans_colnames),
-        function(colname) {
-            col <- unlist(m[ , colname], recursive=FALSE, use.names=FALSE)
-            if (is.numeric(col))
-                col <- lossless_num_to_int(col)
-            col
-        }
-    )
-
-    as.data.frame(list_of_cols, check.names=FALSE)
-}
+### Lots of massaging and sanity checks to deal with the messiness of UCSC's
+### JSON.
+###
 
 .extract_table_data_from_parsed_json <- function(parsed_json, primary_table)
 {
@@ -65,7 +25,7 @@
     stopifnot(is.list(table_data))
     if (is.null(names(table_data))) {
         ## One single table.
-        ans <- .make_data_frame_from_list_of_rows(table_data)
+        ans <- make_data_frame_from_list_of_rows(table_data)
     } else {
         ## 'table_data' is a named list with the chromosome names on it. Each
         ## list element in 'table_data' is itself a list that represents a
@@ -78,7 +38,7 @@
             warning(wmsg("track is empty ==> returning a 0x0 data frame"))
             return(data.frame())
         }
-        dfs <- lapply(table_data[idx], .make_data_frame_from_list_of_rows)
+        dfs <- lapply(table_data[idx], make_data_frame_from_list_of_rows)
         ans <- do.call(rbind, unname(dfs))
     }
     stopifnot(nrow(ans) == parsed_json[["itemsReturned"]])
@@ -89,6 +49,8 @@
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### .extract_table_data_from_parsed_json2()
 ###
+### WARNING: For JSON parsed with jsonlite::fromJSON()!
+###
 ### A slightly simpler alternative to .extract_table_data_from_parsed_json()
 ### that takes advantage of the built-in data massaging capabilities of
 ### jsonlite::fromJSON().
@@ -96,15 +58,12 @@
 ### it first requires switching from rjson::fromJSON to jsonlite::fromJSON
 ### in internal helper .parse_json() defined in R/REST_API.R.
 ### As Marcel pointed out, unlike the former the latter recognizes JSON
-### lists that represent data tables and automatically turns them into data
+### lists that represent tabular data and automatically turns them into data
 ### frames. See https://github.com/Bioconductor/Contributions/issues/3343
 ###
-### Notes:
-### - The code below still needs to perform a little bit of data massaging
-###   and sanity checks to deal with the messiness of UCSC's JSON!
-### - There's no significant difference in performance between the
-###   jsonlite::fromJSON + .extract_table_data_from_parsed_json2 and the
-###   rjson::fromJSON + .extract_table_data_from_parsed_json solutions.
+### Note that the code below still needs to perform a little bit of data
+### massaging and sanity checks to deal with the messiness of UCSC's JSON!
+###
 
 ### The table data is either put all together in a single data frame or split
 ### into one data frame per chromosome.
@@ -154,6 +113,6 @@ fetch_UCSC_track_data <- function(genome, primary_table, api.url=UCSC.api.url())
     if (!(isSingleString(primary_table) && nzchar(primary_table)))
         stop(wmsg("'primary_table' must be a single (non-empty) string"))
     parsed_json <- API_get_track_data(genome, primary_table, api.url=api.url)
-    .extract_table_data_from_parsed_json(parsed_json, primary_table)
+    .extract_table_data_from_parsed_json2(parsed_json, primary_table)
 }
 

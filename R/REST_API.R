@@ -13,17 +13,18 @@
     ## will silently return an NA (see ?httr::content). This happens for
     ## example with the following query:
     ##   query <- list(genome="eboVir3", track="iedbBcell")
-    ##  .API_query("getData/track", query=query)
+    ##   .API_query("getData/track", query=query)
     ## This query returns a response with bytes 233 (\xe9) and 246 (\xf6)
     ## in response$content. These bytes cause the call to content() below
     ## to silently return an NA.
-    text <- content(response, as="text", encoding="UTF-8")
-    stopifnot(is.character(text), length(text) == 1L)
-    if (is.na(text)) {
-        text <- content(response, as="text", encoding="Windows-1252")
-        stopifnot(isSingleString(text))
+    json_string <- content(response, as="text", encoding="UTF-8")
+    stopifnot(is.character(json_string), length(json_string) == 1L)
+    if (is.na(json_string)) {
+        json_string <- content(response, as="json_string",
+                               encoding="Windows-1252")
+        stopifnot(isSingleString(json_string))
     }
-    parsed_json <- fromJSON(text)
+    parsed_json <- jsonlite::fromJSON(json_string)
     ## Sanity checks.
     stopifnot(is.list(parsed_json), !is.null(names(parsed_json)))
     parsed_json
