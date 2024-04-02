@@ -1,6 +1,6 @@
 
-test_that("UCSC_dbselect()", {
-    result <- UCSC_dbselect("gorGor6", "ncbiRefSeqCurated")
+test_that("fetch_UCSC_track_data()", {
+    result <- fetch_UCSC_track_data("gorGor6", "ncbiRefSeqCurated")
     expect_true(is.data.frame(result))
     EXPECTED_COLNAMES <- c("bin", "name", "chrom", "strand",
                            "txStart", "txEnd", "cdsStart", "cdsEnd",
@@ -9,17 +9,15 @@ test_that("UCSC_dbselect()", {
     expect_identical(colnames(result), EXPECTED_COLNAMES)
     expect_true(nrow(result) >= 400L)
 
-    result <- UCSC_dbselect("gorGor6", "gap")
+    result <- fetch_UCSC_track_data("gorGor6", "gap")
     expect_true(is.data.frame(result))
     EXPECTED_COLNAMES <- c("bin", "chrom", "chromStart", "chromEnd", "ix" ,                                "n", "size", "type", "bridge")
     expect_identical(colnames(result), EXPECTED_COLNAMES)
     expect_true(nrow(result) >= 800L)
 
-    columns <- c("chrom", "chromStart", "chromEnd", "type")
-    where <- "chrom='chrX' AND type='contig'"
-    result <- UCSC_dbselect("gorGor6", "gap", columns=columns, where=where)
+    result <- fetch_UCSC_track_data("eboVir3", "iedbBcell")
     expect_true(is.data.frame(result))
-    expect_identical(colnames(result), columns)
-    expect_true(nrow(result) >= 2L)
+    expect_true(ncol(result) == 76L)
+    expect_true(nrow(result) >= 50L)
 })
 

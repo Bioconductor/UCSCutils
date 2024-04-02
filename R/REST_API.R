@@ -20,8 +20,7 @@
     json_string <- content(response, as="text", encoding="UTF-8")
     stopifnot(is.character(json_string), length(json_string) == 1L)
     if (is.na(json_string)) {
-        json_string <- content(response, as="json_string",
-                               encoding="Windows-1252")
+        json_string <- content(response, as="text", encoding="Windows-1252")
         stopifnot(isSingleString(json_string))
     }
     parsed_json <- jsonlite::fromJSON(json_string)
@@ -54,7 +53,7 @@
         stop(wmsg("[HTTP ", status_code, "] ", fallback_errmsg))
 }
 
-### Returns parsed JSON content of the response.
+### Returns the parsed JSON content of the response.
 .API_query <- function(endpoint, query=list(), api.url=UCSC.api.url(),
                        fallback_errmsg=NULL)
 {
