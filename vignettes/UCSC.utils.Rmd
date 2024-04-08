@@ -1,9 +1,9 @@
 ---
-title: "The _UCSC.utils_ package"
+title: "The **UCSC.utils** package"
 author:
 - name: Hervé Pagès
   affiliation: Fred Hutchinson Cancer Research Center, Seattle, WA
-date: "Compiled `r doc_date()`;  Modified 15 March 2024"
+date: "Compiled `r doc_date()`; Modified 8 April 2024"
 package: UCSC.utils
 vignette: |
   %\VignetteIndexEntry{The UCSC.utils package}
@@ -31,7 +31,7 @@ functionalities implemented in downstream packages like
 Like any other Bioconductor package, `r Biocpkg("UCSC.utils")` should always
 be installed with `BiocManager::install()`:
 ```{r, eval=FALSE}
-if (!requireNamespace("BiocManager", quietly = TRUE))
+if (!require("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 BiocManager::install("UCSC.utils")
 ```
