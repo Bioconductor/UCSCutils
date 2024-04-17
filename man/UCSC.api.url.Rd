@@ -5,36 +5,41 @@
 \title{Get or set the default UCSC API URL}
 
 \description{
-  Get or set the default UCSC API URL.
+  Convenience helper for getting or setting global option \code{UCSC.api.url}.
 }
 
 \usage{
-UCSC.api.url(new_url=NULL)
+UCSC.api.url(url=NULL)
 }
 
 \arguments{
-  \item{new_url}{
+  \item{url}{
     Alternative UCSC API URL to use by default.
   }
 }
 
 \details{
-  \code{UCSC.api.url()} is just a convenience wrapper for
-  \code{getOption("UCSC.api.url")}.
+  Various functions in the \pkg{UCSC.utils} package query the UCSC REST API.
+  This is the case for example for \code{\link{list_UCSC_genomes}},
+  \code{\link{get_UCSC_chrom_sizes}}, \code{\link{list_UCSC_tracks}}
+  and others.
 
-  To change the default UCSC API URL, call \code{UCSC.api.url(new_url)}
-  where \code{new_url} is a single string containing the alternative URL.
-  Note that this is just a convenience wrapper for
-  \code{options(UCSC.api.url=new_url)}.
+  Global option \code{UCSC.api.url} controls the UCSC API URL
+  that these functions use y default. The option is set to
+  \code{"https://api.genome.ucsc.edu"} at package startup.
+
+  \code{UCSC.api.url()} and \code{UCSC.api.url(url)} are provided
+  as convenient ways of doing \code{getOption("UCSC.api.url")}
+  and \code{options(UCSC.api.url=url)}, respectively.
 }
 
 \value{
-  When called with no argument, \code{UCSC.api.url()} returns the URL of
-  the UCSC API that is currently used by default.
+  When called with no argument, \code{UCSC.api.url()} returns
+  \code{getOption("UCSC.api.url")}.
 
-  When passed a new URL, \code{UCSC.api.url(new_url)} returns the URL of
-  the UCSC API that was \emph{previously} used by default. Note that the
-  URL is returned invisibly.
+  When passed an URL, \code{UCSC.api.url(url)} returns the \emph{old} URL,
+  that is, the UCSC API URL that was previously used by default. Note
+  that the \emph{old} URL is returned invisibly.
 }
 
 \seealso{
@@ -47,14 +52,16 @@ UCSC.api.url(new_url=NULL)
 }
 
 \examples{
-UCSC.api.url()  # current default UCSC API URL
+UCSC.api.url()  # current default value of the UCSC API URL
 get_UCSC_chrom_sizes("ce11", recache=TRUE)
 
 ## Temporarily use the mirror in Asia:
 old_url <- UCSC.api.url("https://genome-asia.ucsc.edu/cgi-bin/hubApi")
+UCSC.api.url()  # new default value of the UCSC API URL
+\donttest{
 get_UCSC_chrom_sizes("ce11", recache=TRUE)
-
-## Restore old URL:
+}
+## Restore old default value:
 UCSC.api.url(old_url)
 }
 

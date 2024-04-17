@@ -4,16 +4,16 @@
 ###
 
 
-UCSC.api.url <- function(new_url=NULL)
+UCSC.api.url <- function(url=NULL)
 {
     ans <- getOption("UCSC.api.url")
-    if (is.null(new_url))
+    if (is.null(url))
         return(ans)
-    if (!(isSingleString(new_url) && nzchar(new_url)))
-        stop(wmsg("'new_url' must be a single (non-empty) string"))
-    if (!startsWith(tolower(new_url), "http"))
-        stop(wmsg("'new_url' must start with \"http\""))
-    options(UCSC.api.url=new_url)
+    if (!(isSingleString(url) && nzchar(url)))
+        stop(wmsg("'url' must be a single (non-empty) string"))
+    if (!startsWith(tolower(url), "http"))
+        stop(wmsg("'url' must start with \"http\""))
+    options(UCSC.api.url=url)
     invisible(ans)  # return old URL invisibly
 }
 
