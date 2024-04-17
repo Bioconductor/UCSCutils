@@ -13,7 +13,7 @@
     ## will silently return an NA (see ?httr::content). This happens for
     ## example with the following query:
     ##   query <- list(genome="eboVir3", track="iedbBcell")
-    ##   .API_query("getData/track", query=query)
+    ##   .query_API("getData/track", query=query)
     ## This query returns a response with bytes 233 (\xe9) and 246 (\xf6)
     ## in response$content. These bytes cause the call to content() below
     ## to silently return an NA.
@@ -36,10 +36,10 @@
     ## details about the error.
     ## Error 400 happens for example with the following query:
     ##   query <- list(genome="mm9", track="chainNetBosTau6Viewnet")
-    ##   .API_query("getData/track", query=query)
+    ##   .query_API("getData/track", query=query)
     ## Error 415 happens for example with the following query:
     ##   query <- list(genome="mm9", track="bamMmsNumtSSorted")
-    ##   .API_query("getData/track", query=query)
+    ##   .query_API("getData/track", query=query)
     if (status_code %in% c(400L, 415L)) {
         parsed_json <- .parse_json(response)
         stop(wmsg("[HTTP ", status_code, "] ",
@@ -54,7 +54,7 @@
 }
 
 ### Returns the parsed JSON content of the response.
-.API_query <- function(endpoint, query=list(), api.url=UCSC.api.url(),
+.query_API <- function(endpoint, query=list(), api.url=UCSC.api.url(),
                        fallback_errmsg=NULL)
 {
     stopifnot(isSingleString(endpoint), nzchar(endpoint),
@@ -84,9 +84,11 @@
 ### Endpoint /list/ucscGenomes
 API_list_genomes <- function(api.url=UCSC.api.url())
 {
+    api.url <- normarg_api.url(api.url)
+
     endpoint <- "list/ucscGenomes"
     fallback_errmsg <- c("failed to get list of UCSC genomes from ", api.url)
-    parsed_json <- .API_query(endpoint, api.url=api.url,
+    parsed_json <- .query_API(endpoint, api.url=api.url,
                               fallback_errmsg=fallback_errmsg)
     ans <- parsed_json[["ucscGenomes"]]
     ## Sanity check.
@@ -98,12 +100,13 @@ API_list_genomes <- function(api.url=UCSC.api.url())
 API_list_chromosomes <- function(genome, api.url=UCSC.api.url())
 {
     stopifnot(isSingleString(genome), nzchar(genome))
+    api.url <- normarg_api.url(api.url)
 
     endpoint <- "list/chromosomes"
     query <- list(genome=genome)
     fallback_errmsg <- c(genome, ": unknown UCSC genome ",
                          "(or ", api.url, " is down?)")
-    parsed_json <- .API_query(endpoint, query=query, api.url=api.url,
+    parsed_json <- .query_API(endpoint, query=query, api.url=api.url,
                               fallback_errmsg=fallback_errmsg)
     ## Sanity check.
     stopifnot(identical(parsed_json[["genome"]], genome))
@@ -114,12 +117,13 @@ API_list_chromosomes <- function(genome, api.url=UCSC.api.url())
 API_list_tracks <- function(genome, api.url=UCSC.api.url())
 {
     stopifnot(isSingleString(genome), nzchar(genome))
+    api.url <- normarg_api.url(api.url)
 
     endpoint <- "list/tracks"
     query <- list(genome=genome)
     fallback_errmsg <- c(genome, ": unknown UCSC genome ",
                          "(or ", api.url, " is down?)")
-    parsed_json <- .API_query(endpoint, query=query, api.url=api.url,
+    parsed_json <- .query_API(endpoint, query=query, api.url=api.url,
                               fallback_errmsg=fallback_errmsg)
     ans <- parsed_json[[genome]]
     ## Sanity check.
@@ -135,13 +139,14 @@ API_get_track_data <- function(genome, primary_table, api.url=UCSC.api.url())
 {
     stopifnot(isSingleString(genome), nzchar(genome),
               isSingleString(primary_table), nzchar(primary_table))
+    api.url <- normarg_api.url(api.url)
 
     endpoint <- "getData/track"
     query <- list(genome=genome, track=primary_table)
     fallback_errmsg <- c(genome, "/", primary_table, ": ",
                          "unknown UCSC genome/primary_table ",
                          "(or ", api.url, " is down?)")
-    parsed_json <- .API_query(endpoint, query=query, api.url=api.url,
+    parsed_json <- .query_API(endpoint, query=query, api.url=api.url,
                               fallback_errmsg=fallback_errmsg)
     ## Sanity checks.
     stopifnot(identical(parsed_json[["genome"]], genome))

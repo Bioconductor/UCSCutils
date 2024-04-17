@@ -9,12 +9,26 @@
 }
 
 \usage{
-UCSC.api.url(url=NULL)
+UCSC.api.url(api.url=NULL)
 }
 
 \arguments{
-  \item{url}{
-    Alternative UCSC API URL to use by default.
+  \item{api.url}{
+    A single string containing the URL to the alternative UCSC API to use
+    by default.
+
+    For convenience, \code{api.url} can also be one of the following aliases:
+    \itemize{
+      \item \code{"primary"}: alias for \code{"https://api.genome.ucsc.edu"}
+            (primary URL, US West Coast);
+      \item \code{""}: same as \code{"primary"};
+      \item \code{"europe"}: alias for
+            \code{"https://genome-euro.ucsc.edu/cgi-bin/hubApi"}
+            (Europe mirror);
+      \item \code{"asia"}: alias for
+            \code{"https://genome-asia.ucsc.edu/cgi-bin/hubApi"}
+            (Asia mirror).
+    }
   }
 }
 
@@ -22,24 +36,25 @@ UCSC.api.url(url=NULL)
   Various functions in the \pkg{UCSC.utils} package query the UCSC REST API.
   This is the case for example for \code{\link{list_UCSC_genomes}},
   \code{\link{get_UCSC_chrom_sizes}}, \code{\link{list_UCSC_tracks}}
-  and others.
+  and more.
 
   Global option \code{UCSC.api.url} controls the UCSC API URL
   that these functions use y default. The option is set to
-  \code{"https://api.genome.ucsc.edu"} at package startup.
+  \code{"https://api.genome.ucsc.edu"} (primary URL, US West Coast)
+  at package startup.
 
-  \code{UCSC.api.url()} and \code{UCSC.api.url(url)} are provided
+  \code{UCSC.api.url()} and \code{UCSC.api.url(some_url)} are provided
   as convenient ways of doing \code{getOption("UCSC.api.url")}
-  and \code{options(UCSC.api.url=url)}, respectively.
+  and \code{options(UCSC.api.url=some_url)}, respectively.
 }
 
 \value{
   When called with no argument, \code{UCSC.api.url()} returns
   \code{getOption("UCSC.api.url")}.
 
-  When passed an URL, \code{UCSC.api.url(url)} returns the \emph{old} URL,
-  that is, the UCSC API URL that was previously used by default. Note
-  that the \emph{old} URL is returned invisibly.
+  When passed an URL, \code{UCSC.api.url(some_url)} returns the
+  \emph{previous} URL, that is, the UCSC API URL that was previously
+  used by default. Note that the previous URL is returned invisibly.
 }
 
 \seealso{
@@ -55,14 +70,15 @@ UCSC.api.url(url=NULL)
 UCSC.api.url()  # current default value of the UCSC API URL
 get_UCSC_chrom_sizes("ce11", recache=TRUE)
 
-## Temporarily use the mirror in Asia:
-old_url <- UCSC.api.url("https://genome-asia.ucsc.edu/cgi-bin/hubApi")
+## Temporarily use the mirror in Europe:
+previous_url <- UCSC.api.url("europe")
 UCSC.api.url()  # new default value of the UCSC API URL
-\donttest{
+
 get_UCSC_chrom_sizes("ce11", recache=TRUE)
-}
-## Restore old default value:
-UCSC.api.url(old_url)
+
+## Restore previous default value:
+UCSC.api.url(previous_url)
+UCSC.api.url()
 }
 
 \keyword{manip}

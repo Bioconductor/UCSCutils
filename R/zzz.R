@@ -1,9 +1,6 @@
 .onLoad <- function(libname, pkgname)
 {
-    ## Alternative UCSC API URLs:
-    ## - Europe: https://genome-euro.ucsc.edu/cgi-bin/hubApi
-    ## - Asia: https://genome-asia.ucsc.edu/cgi-bin/hubApi
-    ## - Mirror installation: https://your.server.edu/cgi-bin/hubApi
-    UCSC.api.url("https://api.genome.ucsc.edu")  # primary URL (West Coast)
+    ## Set global option "UCSC.api.url" to primary URL (West Coast).
+    UCSC.api.url("primary")
 }
 
