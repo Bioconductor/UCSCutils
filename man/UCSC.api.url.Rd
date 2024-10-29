@@ -81,4 +81,4 @@ UCSC.api.url(previous_url)
 UCSC.api.url()
 }
 
-\keyword{manip}
+\keyword{utilities}
