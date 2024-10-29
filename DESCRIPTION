@@ -10,7 +10,7 @@ biocViews: Infrastructure, GenomeAssembly, Annotation, GenomeAnnotation,
 	DataImport
 URL: https://bioconductor.org/packages/UCSC.utils
 BugReports: https://github.com/Bioconductor/UCSC.utils/issues
-Version: 1.1.0
+Version: 1.2.0
 License: Artistic-2.0
 Encoding: UTF-8
 Authors@R: person("Hervé", "Pagès", role=c("aut", "cre"),
